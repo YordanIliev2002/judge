@@ -40,6 +40,11 @@ defmodule JudgeWeb.Router do
     end
   end
 
+  scope "/", JudgeWeb do
+    pipe_through [:browser, :require_authenticated_user]
+    resources "/tasks", TaskController
+  end
+
   ## Authentication routes
   scope "/", JudgeWeb do
     pipe_through [:browser, :redirect_if_user_is_authenticated]
