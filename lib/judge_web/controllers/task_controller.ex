@@ -14,7 +14,7 @@ defmodule JudgeWeb.TaskController do
     render(conn, :new, changeset: changeset)
   end
 
-  def create(conn, %{"task" => %{"cases" => raw_cases } = task_params}) do
+  def create(conn, %{"task" => task_params}) do
     task_params = deserialize_cases(task_params)
     case TaskJudge.create_task(conn.assigns.current_user, task_params) do
       {:ok, task} ->

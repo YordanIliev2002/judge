@@ -43,6 +43,8 @@ defmodule JudgeWeb.Router do
   scope "/", JudgeWeb do
     pipe_through [:browser, :require_authenticated_user]
     resources "/tasks", TaskController
+
+    post "/tasks/:task_id/submissions", SubmissionController, :create
   end
 
   ## Authentication routes

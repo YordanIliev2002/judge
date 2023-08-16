@@ -7,15 +7,10 @@ defmodule Judge.TaskJudge do
   alias Judge.Repo
 
   alias Judge.TaskJudge.Task
+  alias Judge.TaskJudge.Submission
 
   @doc """
   Returns the list of tasks.
-
-  ## Examples
-
-      iex> list_tasks()
-      [%Task{}, ...]
-
   """
   def list_tasks do
     Repo.all(Task)
@@ -25,29 +20,11 @@ defmodule Judge.TaskJudge do
   Gets a single task.
 
   Raises `Ecto.NoResultsError` if the Task does not exist.
-
-  ## Examples
-
-      iex> get_task!(123)
-      %Task{}
-
-      iex> get_task!(456)
-      ** (Ecto.NoResultsError)
-
   """
   def get_task!(id), do: Repo.get!(Task, id)
 
   @doc """
   Creates a task.
-
-  ## Examples
-
-      iex> create_task(%{field: value})
-      {:ok, %Task{}}
-
-      iex> create_task(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
   """
   def create_task(current_user, attrs \\ %{}) do
     %Task{author_id: current_user.id}
@@ -57,15 +34,6 @@ defmodule Judge.TaskJudge do
 
   @doc """
   Updates a task.
-
-  ## Examples
-
-      iex> update_task(task, %{field: new_value})
-      {:ok, %Task{}}
-
-      iex> update_task(task, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
   """
   def update_task(%Task{} = task, attrs) do
     task
@@ -75,15 +43,6 @@ defmodule Judge.TaskJudge do
 
   @doc """
   Deletes a task.
-
-  ## Examples
-
-      iex> delete_task(task)
-      {:ok, %Task{}}
-
-      iex> delete_task(task)
-      {:error, %Ecto.Changeset{}}
-
   """
   def delete_task(%Task{} = task) do
     Repo.delete(task)
@@ -91,14 +50,17 @@ defmodule Judge.TaskJudge do
 
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking task changes.
-
-  ## Examples
-
-      iex> change_task(task)
-      %Ecto.Changeset{data: %Task{}}
-
   """
   def change_task(%Task{} = task, attrs \\ %{}) do
     Task.changeset(task, attrs)
+  end
+
+  @doc """
+  Creates a submission.
+  """
+  def create_submission(attrs \\ %{}) do
+    %Submission{}
+    |> Submission.changeset(attrs)
+    |> Repo.insert()
   end
 end
