@@ -1,0 +1,15 @@
+<.header>
+  Submission for <b><%= @submission.task.title %></b> by <b><%= @submission.user.email %></b>
+</.header>
+
+<section>
+  <p> Status: <b> Queued </b></p>
+  <p> Submitted code:</p>
+  <div>
+    <.form :let={f}>
+      <.input field={f[:code]} type="textarea" rows="15" value={@submission.code} readonly/>
+    </.form>
+  </div>
+</section>
+
+<.back navigate={~p"/tasks/#{@submission.task.id}"}>Back to task</.back>

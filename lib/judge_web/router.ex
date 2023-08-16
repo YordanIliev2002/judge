@@ -45,6 +45,7 @@ defmodule JudgeWeb.Router do
     resources "/tasks", TaskController
 
     post "/tasks/:task_id/submissions", SubmissionController, :create
+    get "/submissions/:submission_id", SubmissionController, :show
   end
 
   ## Authentication routes
