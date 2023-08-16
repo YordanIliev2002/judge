@@ -14,7 +14,8 @@ defmodule JudgeWeb.TaskController do
     render(conn, :new, changeset: changeset)
   end
 
-  def create(conn, %{"task" => task_params}) do
+  def create(conn, %{"task" => %{"cases" => raw_cases } = task_params}) do
+    task_params = deserialize_cases(task_params)
     case TaskJudge.create_task(conn.assigns.current_user, task_params) do
       {:ok, task} ->
         conn
@@ -34,6 +35,7 @@ defmodule JudgeWeb.TaskController do
   def edit(conn, %{"id" => id}) do
     task = TaskJudge.get_task!(id)
     user_id = conn.assigns.current_user.id
+    task = serialize_cases(task)
     case task.author_id do
       ^user_id ->
         render(conn, :edit, task: task, changeset: TaskJudge.change_task(task))
@@ -46,6 +48,7 @@ defmodule JudgeWeb.TaskController do
 
   def update(conn, %{"id" => id, "task" => task_params}) do
     task = TaskJudge.get_task!(id)
+    task_params = deserialize_cases(task_params)
 
     case TaskJudge.update_task(task, task_params) do
       {:ok, task} ->
@@ -74,5 +77,15 @@ defmodule JudgeWeb.TaskController do
         |> redirect(to: ~p"/tasks/#{task}")
     end
 
+  end
+
+  defp serialize_cases(%Task{} = task) do
+    {:ok, cases} = Jason.encode(task.cases)
+    Map.put(task, :cases, cases)
+  end
+
+  defp deserialize_cases(%{"cases" => raw_cases} = task_params) do
+    {:ok, cases} = Jason.decode(raw_cases)
+    Map.put(task_params, "cases", cases)
   end
 end

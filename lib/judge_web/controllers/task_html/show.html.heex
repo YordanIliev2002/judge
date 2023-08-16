@@ -14,6 +14,7 @@
   <:item title="Title"><%= @task.title %></:item>
   <:item title="Description"><%= @task.description %></:item>
   <:item title="Timelimit (milliseconds)"><%= @task.tl_millis %></:item>
+  <:item title="Number of test cases"><%= length(@task.cases) %></:item>
 </.list>
 
 <.back navigate={~p"/tasks"}>Back to tasks</.back>
