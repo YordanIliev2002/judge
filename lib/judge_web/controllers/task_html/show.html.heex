@@ -1,6 +1,5 @@
 <.header>
-  Task <%= @task.id %>
-  <:subtitle>This is a task record from your database.</:subtitle>
+  <%= @task.title %>
   <:actions>
     <%= if @task.author_id == @conn.assigns.current_user.id do %>
       <.link href={~p"/tasks/#{@task}/edit"}>
@@ -10,11 +9,8 @@
   </:actions>
 </.header>
 
-<.list>
-  <:item title="Title"><%= @task.title %></:item>
-  <:item title="Description"><%= @task.description %></:item>
-  <:item title="Timelimit (milliseconds)"><%= @task.tl_millis %></:item>
-  <:item title="Number of test cases"><%= length(@task.cases) %></:item>
-</.list>
+<section>
+  <span><%= @task.description %></span>
+</section>
 
 <.back navigate={~p"/tasks"}>Back to tasks</.back>

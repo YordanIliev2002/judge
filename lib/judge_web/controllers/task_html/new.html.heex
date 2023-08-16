@@ -1,6 +1,24 @@
 <.header>
   New Task
-  <:subtitle>Use this form to manage task records in your database.</:subtitle>
+  <%!-- TODO extract as custom component --%>
+  <:subtitle>
+    Here you can edit your task.
+    <br/>
+    The tests need to be in JSON format:
+    <pre>
+[
+  {
+    "input": "*input for test 1*",
+    "output": "*output for test 1*"
+  },
+  {
+    "input": "*input for test 2*",
+    "output": "*output for test 2*"
+  }
+  ...
+]
+    </pre>
+  </:subtitle>
 </.header>
 
 <.task_form changeset={@changeset} action={~p"/tasks"} />
