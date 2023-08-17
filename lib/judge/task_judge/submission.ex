@@ -4,6 +4,7 @@ defmodule Judge.TaskJudge.Submission do
 
   schema "submissions" do
     field :code, :string
+    field :status, :string
     belongs_to(:user, Judge.Accounts.User)
     belongs_to(:task, Judge.TaskJudge.Task)
 
@@ -15,6 +16,7 @@ defmodule Judge.TaskJudge.Submission do
     task
     |> cast(attrs, [:user_id, :code, :task_id])
     |> validate_required([:user_id, :code, :task_id])
+    |> validate_inclusion(:status, ["QUEUED", "EVALUATED"])
     |> validate_length(:code, min: 0, max: 5000)
   end
 end
