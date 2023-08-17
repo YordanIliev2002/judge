@@ -5,7 +5,7 @@ defmodule JudgeWeb.SubmissionController do
 
   def create(conn, %{"task_id" => task_id, "code" => code}) do
     Logger.info("Submitting, task: #{task_id}, code: #{code}")
-    {:ok, submission} = TaskJudge.create_submission(%{
+    submission = TaskJudge.create_submission!(%{
       task_id: task_id,
       user_id: conn.assigns.current_user.id,
       code: code

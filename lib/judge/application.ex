@@ -8,16 +8,12 @@ defmodule Judge.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      # Start the Telemetry supervisor
       JudgeWeb.Telemetry,
-      # Start the Ecto repository
       Judge.Repo,
-      # Start the PubSub system
       {Phoenix.PubSub, name: Judge.PubSub},
-      # Start Finch
       {Finch, name: Judge.Finch},
-      # Start the Endpoint (http/https)
-      JudgeWeb.Endpoint
+      JudgeWeb.Endpoint,
+      Judge.Rabbit
       # Start a worker by calling: Judge.Worker.start_link(arg)
       # {Judge.Worker, arg}
     ]
@@ -28,8 +24,6 @@ defmodule Judge.Application do
     Supervisor.start_link(children, opts)
   end
 
-  # Tell Phoenix to update the endpoint configuration
-  # whenever the application is updated.
   @impl true
   def config_change(changed, _new, removed) do
     JudgeWeb.Endpoint.config_change(changed, removed)

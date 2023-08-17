@@ -5,7 +5,23 @@ services:
     container_name: judge_db
     restart: always
     ports:
-      - "5432:5432"
+      - 5432:5432
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+  rabbit_mq:
+    image: "rabbitmq:3.12-management"
+    container_name: rabbit_mq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - type: bind
+        source: ./rabbit_mq/rabbitmq-enabled-plugins
+        target: /etc/rabbitmq/enabled_plugins
+      - type: bind
+        source: ./rabbit_mq/rabbitmq.config
+        target: /etc/rabbitmq/rabbitmq.config
+      - type: bind
+        source: ./rabbit_mq/rabbitmq-defs.json
+        target: /etc/rabbitmq/rabbitmq-defs.json

@@ -1,0 +1,54 @@
+{
+  "users": [
+    {
+      "name": "admin",
+      "password_hash": "DR7y6Cil2VbNsczDoIraHoefoeqNlPE4T0j6qnZBsKVOaWAc",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "administrator"
+    }
+  ],
+  "vhosts": [
+    {
+      "name": "/"
+    }
+  ],
+  "permissions": [
+    {
+      "user": "admin",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    }
+  ],
+  "exchanges": [
+    {
+      "name": "new-submissions-topic",
+      "vhost": "/",
+      "type": "fanout",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    }
+  ],
+  "queues": [
+    {
+      "name": "new-submissions-queue",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    }
+  ],
+  "bindings": [
+    {
+      "source": "new-submissions-topic",
+      "vhost": "/",
+      "destination": "new-submissions-queue",
+      "destination_type": "queue",
+      "routing_key": "*",
+      "arguments": {}
+    }
+  ]
+}

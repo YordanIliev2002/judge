@@ -20,6 +20,10 @@ if System.get_env("PHX_SERVER") do
   config :judge, JudgeWeb.Endpoint, server: true
 end
 
+config :judge, Rabbit,
+  username: System.get_env("AMQP_USERNAME") || "admin",
+  password: System.get_env("AMQP_PASSWORD") || "password"
+
 if config_env() == :prod do
   database_url =
     System.get_env("DATABASE_URL") ||

@@ -19,7 +19,7 @@ defmodule Judge.MixProject do
   def application do
     [
       mod: {Judge.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :amqp]
     ]
   end
 
@@ -50,7 +50,8 @@ defmodule Judge.MixProject do
       {:telemetry_poller, "~> 1.0"},
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
-      {:plug_cowboy, "~> 2.5"}
+      {:plug_cowboy, "~> 2.5"},
+      {:amqp, "~> 1.0"},
     ]
   end
 

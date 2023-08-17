@@ -8,6 +8,7 @@ defmodule Judge.TaskJudge do
 
   alias Judge.TaskJudge.Task
   alias Judge.TaskJudge.Submission
+  alias Judge.Rabbit
 
   def list_tasks do
     Repo.all(Task)
@@ -35,11 +36,13 @@ defmodule Judge.TaskJudge do
     Task.changeset(task, attrs)
   end
 
-  def create_submission(attrs \\ %{}) do
-    %Submission{}
+  def create_submission!(attrs \\ %{}) do
+    {:ok, submission} = %Submission{}
     |> Submission.changeset(attrs)
     |> Repo.insert()
-    # TODO - send msg to rabbitMQ
+    task = Repo.get(Task, submission.task_id)
+    Rabbit.send_for_evaluation(submission, task)
+    submission
   end
 
   def get_submission_with_task!(submission_id) do
