@@ -10,7 +10,9 @@
 </.header>
 
 <section>
-  <span><%= @task.description %></span>
+  <p style="white-space: pre-line">
+  <%= @task.description %>
+  </p>
   <b> <h2> Submit solution:</h2> </b>
   <div>
     <.form :let={f} action={~p"/tasks/#{@task}/submissions"}>
