@@ -13,7 +13,8 @@ defmodule Judge.Application do
       {Phoenix.PubSub, name: Judge.PubSub},
       {Finch, name: Judge.Finch},
       JudgeWeb.Endpoint,
-      Judge.Rabbit
+      Judge.SubmissionEvaluatedListener,
+      Judge.Rabbit,
       # Start a worker by calling: Judge.Worker.start_link(arg)
       # {Judge.Worker, arg}
     ]

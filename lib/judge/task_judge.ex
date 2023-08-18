@@ -4,11 +4,12 @@ defmodule Judge.TaskJudge do
   """
 
   import Ecto.Query, warn: false
-  alias Judge.Repo
+  require Logger
 
+  alias Judge.Repo
+  alias Judge.Rabbit
   alias Judge.TaskJudge.Task
   alias Judge.TaskJudge.Submission
-  alias Judge.Rabbit
 
   def list_tasks do
     Repo.all(Task)
@@ -48,5 +49,14 @@ defmodule Judge.TaskJudge do
   def get_submission_with_task!(submission_id) do
     Repo.get!(Submission, submission_id)
     |> Repo.preload([:task, :user])
+  end
+
+  def evaluate_submission(%{case_results: results, submission_id: id}) do
+    IO.inspect("here")
+    res = Repo.get(Submission, id)
+    |> Submission.changeset(%{status: "EVALUATED", case_results: results})
+    |> Repo.update()
+    Logger.info("xd xd #{inspect(res)}")
+    res
   end
 end

@@ -14,7 +14,7 @@ defmodule Judge.TaskJudge.Submission do
   @doc false
   def changeset(task, attrs) do
     task
-    |> cast(attrs, [:user_id, :code, :task_id])
+    |> cast(attrs, [:user_id, :code, :task_id, :status])
     |> validate_required([:user_id, :code, :task_id])
     |> validate_inclusion(:status, ["QUEUED", "EVALUATED"])
     |> validate_length(:code, min: 0, max: 5000)

@@ -10,6 +10,10 @@ defmodule Judge.Rabbit do
     publish("new-submissions-topic", json_payload)
   end
 
+  def ack(delivery_tag) do
+    GenServer.call(:rabbit, {:ack, delivery_tag})
+  end
+
   defp publish(topic, payload) do
     GenServer.cast(:rabbit, {:send, topic, payload})
   end
@@ -26,6 +30,8 @@ defmodule Judge.Rabbit do
       password: config[:password]
     )
     {:ok, channel} = AMQP.Channel.open(connection)
+    # TODO - find better way to obtain pid
+    AMQP.Basic.consume(channel, "evaluated-submissions-queue", Judge.SubmissionEvaluatedListener.get_pid())
     {:ok, %{channel: channel, connection: connection}}
   end
 
@@ -33,6 +39,11 @@ defmodule Judge.Rabbit do
     Logger.debug("Sending message #{payload} to topic #{topic}")
     AMQP.Basic.publish(state.channel, topic, "", payload)
     {:noreply, state}
+  end
+
+  def handle_call({:ack, delivery_tag}, _from, state) do
+    AMQP.Basic.ack(state.channel, delivery_tag)
+    {:reply, :ok, state}
   end
 
   def terminate(_, state) do
