@@ -3,7 +3,17 @@
 </.header>
 
 <section>
-  <p> Status: <b> <%= @submission.status %> </b></p>
+  <p> Status: <b> <%= @submission.status %> </b> </p>
+  <p>
+    Score:
+    <b style={"#{
+      case @submission.score do
+        100 -> "color:green"
+        0 -> "color: red"
+        _ -> "color: orange"
+      end
+    }"}> <%= @submission.score || "??" %> </b>
+  </p>
   <p> Submitted code:</p>
   <div>
     <.form :let={f}>

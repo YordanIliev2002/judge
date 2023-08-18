@@ -52,11 +52,16 @@ defmodule Judge.TaskJudge do
   end
 
   def evaluate_submission(%{case_results: results, submission_id: id}) do
-    IO.inspect("here")
+    score = get_score(results)
     res = Repo.get(Submission, id)
-    |> Submission.changeset(%{status: "EVALUATED", case_results: results})
+    |> Submission.changeset(%{status: "EVALUATED", case_results: results, score: score})
     |> Repo.update()
-    Logger.info("xd xd #{inspect(res)}")
     res
+  end
+
+  defp get_score(results) when is_list(results) do
+    ok_count = results |> Enum.count(&(&1 == "OK"))
+    total_count = results |> Enum.count()
+    div(100 * ok_count, total_count)
   end
 end

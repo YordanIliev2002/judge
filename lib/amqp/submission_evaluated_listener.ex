@@ -13,8 +13,8 @@ defmodule Judge.SubmissionEvaluatedListener do
     {:ok, payload} = Jason.decode(json, keys: :atoms)
     {:ok, changeset} = Judge.TaskJudge.evaluate_submission(payload)
 
-    # :ok = Rabbit.ack(meta.delivery_tag)
-    # Logger.debug("Ack'd event: #{inspect(event)}")
+    :ok = Rabbit.ack(meta.delivery_tag)
+    Logger.debug("Ack'd event: #{inspect(event)}")
     {:noreply, state}
   end
 
