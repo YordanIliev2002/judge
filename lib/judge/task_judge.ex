@@ -15,6 +15,17 @@ defmodule Judge.TaskJudge do
     Repo.all(Task)
   end
 
+  def get_user_scores(tasks, user_id) do
+    task_ids = tasks |> Enum.map(&(&1.id))
+    results = Repo.all(from s in Submission,
+      where: s.task_id in ^task_ids,
+      where: ^user_id == s.user_id,
+      group_by: s.task_id,
+      select: %{s.task_id => max(s.score)})
+    results
+    |> Enum.reduce(&Map.merge/2)
+  end
+
   def get_task!(id), do: Repo.get!(Task, id)
 
   def create_task(current_user, attrs \\ %{}) do

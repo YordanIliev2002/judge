@@ -6,7 +6,8 @@ defmodule JudgeWeb.TaskController do
 
   def index(conn, _params) do
     tasks = TaskJudge.list_tasks()
-    render(conn, :index, tasks: tasks)
+    scores = TaskJudge.get_user_scores(tasks, conn.assigns.current_user.id)
+    render(conn, :index, tasks: tasks, scores: scores)
   end
 
   def new(conn, _params) do

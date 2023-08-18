@@ -29,7 +29,6 @@
     <p> Cases:
       <%= for item <- (@submission.case_results |> Enum.intersperse(", ")) do %>
         <span style={"#{
-          IO.inspect(item)
           case item do
             "OK" -> "color: green"
             "WA" -> "color: red"
