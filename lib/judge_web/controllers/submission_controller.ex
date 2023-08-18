@@ -13,6 +13,12 @@ defmodule JudgeWeb.SubmissionController do
     redirect(conn, to: ~p"/submissions/#{submission.id}")
   end
 
+  def all(conn, _meta) do
+    user_id = conn.assigns.current_user.id
+    submissions = TaskJudge.get_all_submissions_of_user(user_id)
+    render(conn, :all, submissions: submissions)
+  end
+
   def show(conn, %{"submission_id" => submission_id}) do
     submission = TaskJudge.get_submission_with_task!(submission_id)
     task = submission.task

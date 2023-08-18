@@ -51,6 +51,13 @@ defmodule Judge.TaskJudge do
     |> Repo.preload([:task, :user])
   end
 
+  def get_all_submissions_of_user(user_id) do
+    Repo.all(from s in Submission,
+      where: s.user_id == ^user_id,
+      order_by: [desc: :inserted_at])
+    |> Repo.preload([:task])
+  end
+
   def evaluate_submission(%{case_results: results, submission_id: id}) do
     score = get_score(results)
     res = Repo.get(Submission, id)
