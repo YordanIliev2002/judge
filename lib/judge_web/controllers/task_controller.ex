@@ -57,7 +57,9 @@ defmodule JudgeWeb.TaskController do
         |> redirect(to: ~p"/tasks/#{task}")
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, :edit, task: task, changeset: changeset)
+        conn
+        |> put_flash(:error, "You provided invalid info.")
+        |> render(:edit, task: task, changeset: TaskJudge.change_task(serialize_cases(task)))
     end
   end
 

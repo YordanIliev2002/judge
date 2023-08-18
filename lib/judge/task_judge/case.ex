@@ -13,6 +13,16 @@ defmodule Judge.TaskJudge.Case do
   def changeset(task_case, attrs) do
     task_case
     |> cast(attrs, [:input, :output])
-    |> validate_required([:input, :output])
+    |> not_null(:input)
+    |> not_null(:output)
+  end
+
+  defp not_null(changeset, field) when is_atom(field) do
+    validate_change(changeset, field, fn field, value ->
+      case value do
+        nil -> [{field, "#{field} should not be null"}]
+        _ -> []
+      end
+    end)
   end
 end
