@@ -30,11 +30,27 @@
       "auto_delete": false,
       "internal": false,
       "arguments": {}
+    },
+    {
+      "name": "evaluated-submissions-topic",
+      "vhost": "/",
+      "type": "fanout",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
     }
   ],
   "queues": [
     {
       "name": "new-submissions-queue",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "evaluated-submissions-queue",
       "vhost": "/",
       "durable": true,
       "auto_delete": false,
@@ -46,6 +62,14 @@
       "source": "new-submissions-topic",
       "vhost": "/",
       "destination": "new-submissions-queue",
+      "destination_type": "queue",
+      "routing_key": "*",
+      "arguments": {}
+    },
+    {
+      "source": "evaluated-submissions-topic",
+      "vhost": "/",
+      "destination": "evaluated-submissions-queue",
       "destination_type": "queue",
       "routing_key": "*",
       "arguments": {}
