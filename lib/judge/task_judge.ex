@@ -23,7 +23,7 @@ defmodule Judge.TaskJudge do
       group_by: s.task_id,
       select: %{s.task_id => max(s.score)})
     results
-    |> Enum.reduce(&Map.merge/2)
+    |> Enum.reduce(%{}, &Map.merge/2)
   end
 
   def get_task!(id), do: Repo.get!(Task, id)
