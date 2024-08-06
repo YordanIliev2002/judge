@@ -29,14 +29,12 @@ defmodule JudgeWorker do
     tl_millis: tl_millis
   }) do
     dir = Path.join([System.tmp_dir!(), "submissions", "#{submission_id}"])
-    Logger.info("dir #{dir}")
 
     File.mkdir_p!(dir)
     code_file = Path.join(dir, "code.cpp")
     exe_file = Path.join(dir, "code_executable")
     File.write!(code_file, code)
     {exec_result, status_code} = System.cmd("g++", [code_file, "-o", exe_file])
-    Logger.info("exec #{exec_result}, status #{status_code}")
 
     test_results = case status_code do
       0 -> cases
@@ -50,6 +48,7 @@ defmodule JudgeWorker do
       _ -> cases |> Enum.map(fn _ -> "CE" end)
     end
 
+    Logger.info("Submission #{submission_id} evaluated #{test_results}")
     SubmissionEvaluated.new(submission_id, test_results)
   end
 
