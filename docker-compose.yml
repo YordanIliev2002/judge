@@ -1,16 +1,17 @@
-version: "3.8"
+# This file is in no way production-ready - it is just for easier demo startup
+# The app is ran in development mode, and passwords are hardcoded
+
 services:
-  judge_db:
-    image: postgres
-    container_name: judge_db
-    restart: always
+  db:
+    image: postgres:16.3
+    container_name: db
     ports:
       - 5432:5432
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
   rabbit_mq:
-    image: "rabbitmq:3.12-management"
+    image: rabbitmq:3.12-management
     container_name: rabbit_mq
     ports:
       - 5672:5672
@@ -25,3 +26,15 @@ services:
       - type: bind
         source: ./rabbit_mq/rabbitmq-defs.json
         target: /etc/rabbitmq/rabbitmq-defs.json
+  server:
+    build: server
+    container_name: server
+    restart: always
+    ports:
+      - 4000:4000
+    environment:
+      - AMQP_HOST=rabbit_mq
+      - POSTGRES_HOST=db
+    depends_on:
+      - rabbit_mq
+      - db

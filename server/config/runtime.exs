@@ -21,8 +21,11 @@ if System.get_env("PHX_SERVER") do
 end
 
 config :judge, Rabbit,
+  host: System.get_env("AMQP_HOST") || "localhost",
   username: System.get_env("AMQP_USERNAME") || "admin",
   password: System.get_env("AMQP_PASSWORD") || "password"
+config :judge, Judge.Repo,
+  hostname: System.get_env("POSTGRES_HOST") || "localhost"
 
 if config_env() == :prod do
   database_url =

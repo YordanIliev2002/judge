@@ -26,6 +26,7 @@ defmodule Judge.Rabbit do
   def init(:ok) do
     config = Application.get_env(:judge, Rabbit)
     {:ok, connection} = AMQP.Connection.open(
+      host: config[:host],
       username: config[:username],
       password: config[:password]
     )
