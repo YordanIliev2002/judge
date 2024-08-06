@@ -38,3 +38,11 @@ services:
     depends_on:
       - rabbit_mq
       - db
+  worker:
+    build: worker
+    container_name: worker
+    restart: always
+    environment:
+      - AMQP_HOST=rabbit_mq
+    depends_on:
+      - rabbit_mq
