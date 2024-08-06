@@ -3,7 +3,7 @@ defmodule Judge.Repo.Migrations.CreateSubmissionsTable do
 
   def change do
     create table(:submissions) do
-      add :code, :string, null: false
+      add :code, :text, null: false
       add :task_id, references(:tasks, on_delete: :nothing)
       add :user_id, references(:users, on_delete: :nothing)
 
