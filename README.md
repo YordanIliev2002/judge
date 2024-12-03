@@ -1,6 +1,6 @@
 # Introduction
 My project for the [Elixir Course](https://elixir-lang.bg/materials/posts) at Sofia University.  
-This is a `programming context judge system`, where authors can create tasks, and contestants can solve them in C++.  
+This is a `programming contest judge system`, where authors can create tasks, and contestants can solve them in C++.  
 It is a distributed system, consisting of the following components:
 - `Server` - an Elixir/Phoenix application that serves the frontend(HTML/JS/CSS), and provides an API for the tasks and submissions.
 - `PostgreSQL` - used by the `Server` to persist user info, tasks and submissions.
