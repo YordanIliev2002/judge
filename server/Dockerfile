@@ -15,5 +15,5 @@ RUN mix deps.compile
 
 EXPOSE 4000
 
-COPY start.sh start.sh
+COPY --chmod=0755 start.sh start.sh
 ENTRYPOINT [ "./start.sh" ]
