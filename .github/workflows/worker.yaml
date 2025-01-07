@@ -13,16 +13,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
     name: "[Worker] Compile, Format, Test"
-    services:
-      rabbit_mq:
-        image: rabbitmq:3.12-management
-        ports:
-          - 5672:5672
-        volumes:
-          - ./rabbit_mq:/etc/rabbitmq
-        env:
-          RABBITMQ_DEFAULT_USER: user
-          RABBITMQ_DEFAULT_PASS: password
     steps:
       - name: Set up Elixir
         uses: erlef/setup-beam@v1
@@ -52,6 +42,9 @@ jobs:
 
       - name: Check Formatting
         run: mix format --check-formatted
+
+      - name: Start Rabbit MQ
+        run: docker compose -f ../docker-compose.yml --wait -p judge up -d rabbit_mq
 
       - name: Run tests
         run: mix test
