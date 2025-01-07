@@ -6,9 +6,9 @@ defmodule Amqp.Dto.SubmissionAdded do
   alias Judge.TaskJudge.Task
 
   def from(
-    %Submission{code: code, id: submission_id},
-    %Task{cases: cases, tl_millis: tl_millis}
-  ) do
+        %Submission{code: code, id: submission_id},
+        %Task{cases: cases, tl_millis: tl_millis}
+      ) do
     %SubmissionAdded{
       cases: cases,
       submission_id: submission_id,

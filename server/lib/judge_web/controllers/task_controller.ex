@@ -17,6 +17,7 @@ defmodule JudgeWeb.TaskController do
 
   def create(conn, %{"task" => task_params}) do
     task_params = deserialize_cases(task_params)
+
     case TaskJudge.create_task(conn.assigns.current_user, task_params) do
       {:ok, task} ->
         conn
@@ -37,9 +38,11 @@ defmodule JudgeWeb.TaskController do
     task = TaskJudge.get_task!(id)
     user_id = conn.assigns.current_user.id
     task = serialize_cases(task)
+
     case task.author_id do
       ^user_id ->
         render(conn, :edit, task: task, changeset: TaskJudge.change_task(task))
+
       _ ->
         conn
         |> put_flash(:error, "Forbidden!")
@@ -67,19 +70,21 @@ defmodule JudgeWeb.TaskController do
   def delete(conn, %{"id" => id}) do
     task = TaskJudge.get_task!(id)
     user_id = conn.assigns.current_user.id
+
     case task.author_id do
       ^user_id ->
         {:ok, _task} = TaskJudge.delete_task(task)
+
         conn
         |> put_flash(:info, "Task deleted successfully.")
         |> redirect(to: ~p"/tasks")
+
       # TODO - extract common error handling
       _ ->
         conn
         |> put_flash(:error, "Forbidden!")
         |> redirect(to: ~p"/tasks/#{task}")
     end
-
   end
 
   defp serialize_cases(%Task{} = task) do

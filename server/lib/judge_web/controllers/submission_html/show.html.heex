@@ -23,10 +23,13 @@
         0 -> "color: red"
         _ -> "color: orange"
       end
-    }"}> <%= @submission.score || "??" %> </b>
+    }"}>
+      <%= @submission.score || "??" %>
+    </b>
   </p>
   <%= if @submission.status == "EVALUATED" do %>
-    <p> Cases:
+    <p>
+      Cases:
       <%= for item <- (@submission.case_results |> Enum.intersperse(", ")) do %>
         <span style={"#{
           case item do
@@ -42,10 +45,10 @@
       <% end %>
     </p>
   <% end %>
-  <p> Submitted code:</p>
+  <p>Submitted code:</p>
   <div>
     <.form :let={f}>
-      <.input field={f[:code]} type="textarea" rows="15" value={@submission.code} readonly/>
+      <.input field={f[:code]} type="textarea" rows="15" value={@submission.code} readonly />
     </.form>
   </div>
 </section>

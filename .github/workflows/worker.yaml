@@ -1,0 +1,112 @@
+name: Worker
+on:
+  push
+
+env:
+  MIX_ENV: test
+
+defaults:
+  run:
+    working-directory: ./worker
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    name: "compile"
+    steps:
+      - name: Set up Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          otp-version: 25
+          elixir-version: 1.14.3
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Hex and Rebar
+        run: mix local.hex --force && mix local.rebar --force
+
+      - name: Cache deps
+        uses: actions/cache@v3
+        env:
+          cache-name: worker-cache-elixir-deps
+        with:
+          path: worker/deps
+          key: mix-${{ env.cache-name }}-${{ hashFiles('worker/mix.lock') }}
+          restore-keys: |
+            mix-${{ env.cache-name }}-
+
+      - name: Install dependencies
+        run: mix deps.get
+
+      - name: Compile
+        run: mix compile
+
+      - name: Upload dependencies
+        uses: actions/upload-artifact@v4
+        with:
+          name: worker-deps
+          path: worker/deps
+
+      - name: Upload build
+        uses: actions/upload-artifact@v4
+        with:
+          name: worker-build
+          path: worker/_build
+
+  lint:
+    runs-on: ubuntu-latest
+    name: "lint"
+    steps:
+      - name: Set up Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          otp-version: 25
+          elixir-version: 1.14.3
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Check Formatting
+        run: mix format --check-formatted
+
+  test:
+    runs-on: ubuntu-latest
+    name: "test"
+    needs: compile
+    steps:
+      - name: Set up Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          otp-version: 25
+          elixir-version: 1.14.3
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # TODO - fix this, should work :(
+      - name: Download dependencies
+        uses: actions/download-artifact@v4
+        with:
+          name: worker-deps
+          path: worker/deps/
+
+      - name: Download build
+        uses: actions/download-artifact@v4
+        with:
+          name: worker-build
+          path: worker/_build/
+
+      - name: Install Hex and Rebar
+        run: mix local.hex --force && mix local.rebar --force
+
+      - name: Install dependencies
+        run: mix deps.get
+
+      - name: Start test RabbitMQ
+        run: |
+          docker compose -f ../docker-compose.yml -p judge up -d rabbit_mq
+          bash ../.ci/wait_for_rabbit_mq.sh
+
+      - name: Run tests
+        run: mix test
