@@ -10,9 +10,9 @@ defaults:
     working-directory: ./worker
 
 jobs:
-  test:
+  compile:
     runs-on: ubuntu-latest
-    name: "[Worker] Compile, Format, Test"
+    name: "compile"
     steps:
       - name: Set up Elixir
         uses: erlef/setup-beam@v1
@@ -24,12 +24,11 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Cache deps
-        id: cache-deps
         uses: actions/cache@v3
         env:
           cache-name: worker-cache-elixir-deps
         with:
-          path: deps
+          path: worker/deps
           key: mix-${{ env.cache-name }}-${{ hashFiles('worker/mix.lock') }}
           restore-keys: |
             mix-${{ env.cache-name }}-
@@ -40,11 +39,74 @@ jobs:
       - name: Compile
         run: mix compile
 
+      - name: Upload dependencies
+        uses: actions/upload-artifact@v4
+        with:
+          name: worker-deps
+          path: worker/deps
+
+      - name: Upload build
+        uses: actions/upload-artifact@v4
+        with:
+          name: worker-build
+          path: worker/_build
+
+  lint:
+    runs-on: ubuntu-latest
+    name: "lint"
+    needs: compile
+    steps:
+      - name: Set up Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          otp-version: 25
+          elixir-version: 1.14.3
+
+      - name: Download dependencies
+        uses: actions/download-artifact@v4
+        with:
+          name: worker-deps
+          path: worker/deps
+
+      - name: Download build
+        uses: actions/download-artifact@v4
+        with:
+          name: worker-build
+          path: worker/_build
+
+      - name: Check Formatting
+        run: mix format --check-formatted
+
+
+  test:
+    runs-on: ubuntu-latest
+    name: "test"
+    needs: compile
+    steps:
+      - name: Set up Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          otp-version: 25
+          elixir-version: 1.14.3
+
+      - name: Download dependencies
+        uses: actions/download-artifact@v4
+        with:
+          name: worker-deps
+          path: worker/deps
+
+      - name: Download build
+        uses: actions/download-artifact@v4
+        with:
+          name: worker-build
+          path: worker/_build
+
       - name: Check Formatting
         run: mix format --check-formatted
 
       - name: Start Rabbit MQ
         run: |
+          docker compose -f ../docker-compose.yml -p judge up -d db
           docker compose -f ../docker-compose.yml -p judge up -d rabbit_mq
           bash ../.ci/wait_for_rabbit_mq.sh
 

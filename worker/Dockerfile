@@ -1,4 +1,3 @@
-# TODO - actually make a production release, instad of starting the app in dev mode
 FROM elixir:1.14.3
 
 COPY mix.exs mix.exs
