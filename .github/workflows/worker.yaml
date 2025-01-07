@@ -1,0 +1,44 @@
+name: Main workflow
+on:
+  push
+
+env:
+  WORKING_DIR: ./worker
+  MIX_ENV: test
+
+jobs:
+  whatever:
+    runs-on: ubuntu-latest
+    name: "[Worker] Compile, Format, Test"
+    steps:
+      - name: Set up Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          otp-version: 25
+          elixir-version: 1.14.3
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Cache deps
+        id: cache-deps
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-elixir-deps
+        with:
+          path: deps
+          key: mix-${{ env.cache-name }}-${{ hashFiles('worker/mix.lock') }}
+          restore-keys: |
+            mix-${{ env.cache-name }}-
+
+      - name: Install dependencies
+        run: mix deps.get
+
+      - name: Compile
+        run: mix compile
+
+      - name: Check Formatting
+        run: mix format --check-formatted
+
+      - name: Run tests
+        run: mix test
