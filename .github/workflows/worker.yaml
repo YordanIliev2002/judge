@@ -23,6 +23,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Install Hex and Rebar
+        run: mix local.hex --force && mix local.rebar --force
+
       - name: Cache deps
         uses: actions/cache@v3
         env:
@@ -54,7 +57,6 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     name: "lint"
-    needs: compile
     steps:
       - name: Set up Elixir
         uses: erlef/setup-beam@v1
@@ -62,21 +64,11 @@ jobs:
           otp-version: 25
           elixir-version: 1.14.3
 
-      - name: Download dependencies
-        uses: actions/download-artifact@v4
-        with:
-          name: worker-deps
-          path: worker/deps
-
-      - name: Download build
-        uses: actions/download-artifact@v4
-        with:
-          name: worker-build
-          path: worker/_build
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Check Formatting
         run: mix format --check-formatted
-
 
   test:
     runs-on: ubuntu-latest
@@ -89,23 +81,28 @@ jobs:
           otp-version: 25
           elixir-version: 1.14.3
 
+      - name: Checkout code
+        uses: actions/checkout@v3
+
       - name: Download dependencies
         uses: actions/download-artifact@v4
         with:
           name: worker-deps
-          path: worker/deps
+          path: worker/deps/
 
       - name: Download build
         uses: actions/download-artifact@v4
         with:
           name: worker-build
-          path: worker/_build
+          path: worker/_build/
 
-      - name: Check Formatting
-        run: mix format --check-formatted
+      - name: Install Hex and Rebar
+        run: mix local.hex --force && mix local.rebar --force
 
       - name: Start Rabbit MQ
         run: |
+          pwd
+          ls -la
           docker compose -f ../docker-compose.yml -p judge up -d db
           docker compose -f ../docker-compose.yml -p judge up -d rabbit_mq
           bash ../.ci/wait_for_rabbit_mq.sh
