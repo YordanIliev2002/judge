@@ -1,4 +1,4 @@
-name: Worker
+name: Server
 on:
   push
 
@@ -7,12 +7,12 @@ env:
 
 defaults:
   run:
-    working-directory: ./worker
+    working-directory: ./server
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    name: "[Worker] Compile, Format, Test"
+    name: "[Server] Compile, Format, Test"
     steps:
       - name: Set up Elixir
         uses: erlef/setup-beam@v1
@@ -27,10 +27,10 @@ jobs:
         id: cache-deps
         uses: actions/cache@v3
         env:
-          cache-name: worker-cache-elixir-deps
+          cache-name: server-cache-elixir-deps
         with:
           path: deps
-          key: mix-${{ env.cache-name }}-${{ hashFiles('worker/mix.lock') }}
+          key: mix-${{ env.cache-name }}-${{ hashFiles('server/mix.lock') }}
           restore-keys: |
             mix-${{ env.cache-name }}-
 
@@ -45,6 +45,7 @@ jobs:
 
       - name: Start Rabbit MQ
         run: |
+          docker compose -f ../docker-compose.yml -p judge up -d db
           docker compose -f ../docker-compose.yml -p judge up -d rabbit_mq
           bash ../.ci/wait_for_rabbit_mq.sh
 
