@@ -3,11 +3,14 @@ on:
   push
 
 env:
-  WORKING_DIR: ./worker
   MIX_ENV: test
 
+defaults:
+  run:
+    working-directory: ./worker
+
 jobs:
-  whatever:
+  test:
     runs-on: ubuntu-latest
     name: "[Worker] Compile, Format, Test"
     steps:
