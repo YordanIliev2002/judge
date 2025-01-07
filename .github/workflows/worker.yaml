@@ -44,7 +44,9 @@ jobs:
         run: mix format --check-formatted
 
       - name: Start Rabbit MQ
-        run: docker compose -f ../docker-compose.yml --wait -p judge up -d rabbit_mq
+        run: |
+          docker compose -f ../docker-compose.yml -p judge up -d rabbit_mq
+          bash ../.ci/wait_for_rabbit_mq.sh
 
       - name: Run tests
         run: mix test
