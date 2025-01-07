@@ -6,7 +6,7 @@
   <:col :let={submission} label="Task"><%= submission.task.title %></:col>
   <:col :let={submission} label="Score">
     <%= if submission.status == "EVALUATED" do %>
-       <p style={"#{
+      <p style={"#{
         case submission.score do
           100 -> "color: green"
           0 -> "color: red"
@@ -14,9 +14,9 @@
         end
        }"}>
         <%= submission.score %>
-       </p>
+      </p>
     <% else %>
-      <p> Pending...</p>
+      <p>Pending...</p>
     <% end %>
   </:col>
   <:col :let={submission} label="Submitted At"><%= submission.inserted_at %> ms</:col>

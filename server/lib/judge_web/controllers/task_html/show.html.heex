@@ -11,16 +11,17 @@
 
 <section>
   <p style="white-space: pre-line">
-  <%= @task.description %>
+    <%= @task.description %>
   </p>
-  <b> <h2> Submit solution:</h2> </b>
+  <b>
+    <h2>Submit solution:</h2>
+  </b>
   <div>
     <.form :let={f} action={~p"/tasks/#{@task}/submissions"}>
-      <.input field={f[:code]} type="textarea" rows="15"/>
+      <.input field={f[:code]} type="textarea" rows="15" />
       <input type="submit" value="Submit" style="dislpay:button" />
     </.form>
   </div>
-
 </section>
 
 <.back navigate={~p"/tasks"}>Back to tasks</.back>

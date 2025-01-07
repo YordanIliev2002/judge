@@ -16,12 +16,17 @@ defmodule Judge.TaskJudge do
   end
 
   def get_user_scores(tasks, user_id) do
-    task_ids = tasks |> Enum.map(&(&1.id))
-    results = Repo.all(from s in Submission,
-      where: s.task_id in ^task_ids,
-      where: ^user_id == s.user_id,
-      group_by: s.task_id,
-      select: %{s.task_id => max(s.score)})
+    task_ids = tasks |> Enum.map(& &1.id)
+
+    results =
+      Repo.all(
+        from s in Submission,
+          where: s.task_id in ^task_ids,
+          where: ^user_id == s.user_id,
+          group_by: s.task_id,
+          select: %{s.task_id => max(s.score)}
+      )
+
     results
     |> Enum.reduce(%{}, &Map.merge/2)
   end
@@ -49,9 +54,11 @@ defmodule Judge.TaskJudge do
   end
 
   def create_submission!(attrs \\ %{}) do
-    {:ok, submission} = %Submission{}
-    |> Submission.changeset(attrs)
-    |> Repo.insert()
+    {:ok, submission} =
+      %Submission{}
+      |> Submission.changeset(attrs)
+      |> Repo.insert()
+
     task = Repo.get(Task, submission.task_id)
     Rabbit.send_for_evaluation(submission, task)
     submission
@@ -63,17 +70,22 @@ defmodule Judge.TaskJudge do
   end
 
   def get_all_submissions_of_user(user_id) do
-    Repo.all(from s in Submission,
-      where: s.user_id == ^user_id,
-      order_by: [desc: :inserted_at])
+    Repo.all(
+      from s in Submission,
+        where: s.user_id == ^user_id,
+        order_by: [desc: :inserted_at]
+    )
     |> Repo.preload([:task])
   end
 
   def evaluate_submission(%{case_results: results, submission_id: id}) do
     score = get_score(results)
-    res = Repo.get(Submission, id)
-    |> Submission.changeset(%{status: "EVALUATED", case_results: results, score: score})
-    |> Repo.update()
+
+    res =
+      Repo.get(Submission, id)
+      |> Submission.changeset(%{status: "EVALUATED", case_results: results, score: score})
+      |> Repo.update()
+
     res
   end
 

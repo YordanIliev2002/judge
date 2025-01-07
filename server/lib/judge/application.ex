@@ -14,7 +14,7 @@ defmodule Judge.Application do
       {Finch, name: Judge.Finch},
       JudgeWeb.Endpoint,
       Judge.SubmissionEvaluatedListener,
-      Judge.Rabbit,
+      Judge.Rabbit
       # Start a worker by calling: Judge.Worker.start_link(arg)
       # {Judge.Worker, arg}
     ]

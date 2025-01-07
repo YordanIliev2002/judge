@@ -18,21 +18,29 @@ defmodule Judge.Rabbit do
     GenServer.cast(:rabbit, {:send, topic, payload})
   end
 
-  #Genserver stuff
+  # Genserver stuff
   def start_link(_) do
     GenServer.start_link(__MODULE__, :ok, name: :rabbit)
   end
 
   def init(:ok) do
     config = Application.get_env(:judge, Rabbit)
-    {:ok, connection} = AMQP.Connection.open(
-      host: config[:host],
-      username: config[:username],
-      password: config[:password]
-    )
+
+    {:ok, connection} =
+      AMQP.Connection.open(
+        host: config[:host],
+        username: config[:username],
+        password: config[:password]
+      )
+
     {:ok, channel} = AMQP.Channel.open(connection)
     # TODO - find better way to obtain pid
-    AMQP.Basic.consume(channel, "evaluated-submissions-queue", Judge.SubmissionEvaluatedListener.get_pid())
+    AMQP.Basic.consume(
+      channel,
+      "evaluated-submissions-queue",
+      Judge.SubmissionEvaluatedListener.get_pid()
+    )
+
     {:ok, %{channel: channel, connection: connection}}
   end
 
