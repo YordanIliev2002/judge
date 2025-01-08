@@ -122,3 +122,19 @@ jobs:
 
       - name: Run tests
         run: mix test
+  docker:
+    runs-on: ubuntu-latest
+    name: "build & publish docker image"
+    needs: [test, lint]
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - uses: "./.github/actions/docker"
+        with:
+          directory: server
+          image-name: judge-server
+          docker-token: ${{ secrets.DOCKER_TOKEN }}
