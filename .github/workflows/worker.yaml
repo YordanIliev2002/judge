@@ -110,3 +110,30 @@ jobs:
 
       - name: Run tests
         run: mix test
+  docker:
+    runs-on: ubuntu-latest
+    name: "build & publish docker image"
+    # TODO - needs test lint
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+
+      - name: Calculate image version
+        id: version
+        run: |
+          export IMAGE_VERSION=$(git rev-list HEAD --count --first-parent)
+          echo $IMAGE_VERSION
+          echo "IMAGE_VERSION=${IMAGE_VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Build image
+        run: docker build -t ghcr.io/yordaniliev2002/judge-worker:${{steps.version.outputs.IMAGE_VERSION}} .
+
