@@ -25,7 +25,10 @@ config :judge, Rabbit,
   username: System.get_env("AMQP_USERNAME") || "admin",
   password: System.get_env("AMQP_PASSWORD") || "password"
 
-config :judge, Judge.Repo, hostname: System.get_env("POSTGRES_HOST") || "localhost"
+config :judge, Judge.Repo,
+  hostname: System.get_env("POSTGRES_HOST") || "localhost",
+  username: System.get_env("POSTGRES_USERNAME") || "postgres",
+  password: System.get_env("POSTGRES_PASSWORD") || "postgres"
 
 if config_env() == :prod do
   database_url =
