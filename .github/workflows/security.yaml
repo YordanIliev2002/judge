@@ -1,9 +1,10 @@
-name: Common
+name: Security analysis
 on:
-  push
+  push:
+    branches:
+      - master
 
 jobs:
-  # TODO - only master
   snyk:
     runs-on: ubuntu-latest
     name: "Snyk monitor"
