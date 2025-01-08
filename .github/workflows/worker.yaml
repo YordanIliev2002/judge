@@ -131,9 +131,12 @@ jobs:
         id: version
         run: |
           export IMAGE_VERSION=$(git rev-list HEAD --count --first-parent)
-          echo $IMAGE_VERSION
           echo "IMAGE_VERSION=${IMAGE_VERSION}" >> "$GITHUB_OUTPUT"
+          echo "IMAGE_NAME=ghcr.io/yordaniliev2002/judge-worker:${IMAGE_VERSION}" >> "$GITHUB_OUTPUT"
 
       - name: Build image
-        run: docker build -t ghcr.io/yordaniliev2002/judge-worker:${{steps.version.outputs.IMAGE_VERSION}} .
+        run: docker build -t ${{steps.version.outputs.IMAGE_NAME}} .
+
+      - name: Publish image
+        run: docker push ${{steps.version.outputs.IMAGE_NAME}}
 
