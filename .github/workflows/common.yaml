@@ -1,0 +1,20 @@
+name: Common
+on:
+  push
+
+jobs:
+  # TODO - only master
+  snyk:
+    runs-on: ubuntu-latest
+    name: "Snyk monitor"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Snyk CLI
+        uses: snyk/actions/setup@master
+
+      - name: Snyk monitor
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: snyk monitor -d --org=yordaniliev2002 --all-projects
