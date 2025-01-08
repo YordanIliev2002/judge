@@ -114,7 +114,7 @@ jobs:
     runs-on: ubuntu-latest
     name: "build & publish docker image"
     needs: [test, lint]
-    # if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master'
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
