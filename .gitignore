@@ -39,3 +39,6 @@
 plan.md
 **/log/
 **/.idea
+
+**/.terraform
+**/*.tfstate*
