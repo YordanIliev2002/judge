@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: rabbitmq-exposer
+  name: judge-rabbitmq-exposer
 spec:
   type: NodePort
   selector:
@@ -9,4 +9,3 @@ spec:
   ports:
     - port: 15672
       targetPort: 15672
-      nodePort: 30003
