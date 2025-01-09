@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: judge-postgres
+  name: judge-postgres-deployment
 spec:
   replicas: 1
   selector:
@@ -13,7 +13,7 @@ spec:
         app: judge-postgres
     spec:
       containers:
-        - name: judge-postgres
+        - name: judge-postgres-container
           image: postgres:16.3
           ports:
             - containerPort: 5432

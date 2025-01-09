@@ -36,7 +36,7 @@ spec:
                   name: judge-rabbitmq-default-user
                   key: password
             - name: POSTGRES_HOST
-              value: judge-postgres.default.svc
+              value: judge-postgres-exposer.default.svc
             - name: POSTGRES_USERNAME
               valueFrom:
                 secretKeyRef:
