@@ -3,6 +3,11 @@ variable "rabbitmq_host" {
   description = "The hostname of the RabbitMQ server"
 }
 
+variable "rabbitmq_port" {
+  nullable    = false
+  description = "The port of the RabbitMQ server"
+}
+
 variable "rabbitmq_username" {
   nullable    = false
   sensitive   = true

@@ -8,7 +8,7 @@ terraform {
 }
 
 provider "rabbitmq" {
-  endpoint = "http://${var.rabbitmq_host}:15672"
+  endpoint = "http://${var.rabbitmq_host}:${var.rabbitmq_port}"
   username = var.rabbitmq_username
   password = var.rabbitmq_password
 }

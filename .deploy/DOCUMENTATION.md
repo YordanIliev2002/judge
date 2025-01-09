@@ -13,14 +13,16 @@ minikube dashboard
 ```shell
 kubectl apply -f "https://github.com/rabbitmq/cluster-operator/releases/latest/download/cluster-operator.yml"
 kubectl apply -f "./.deploy/k8s/infra/rabbitmq/cluster.yaml"
+kubectl apply -f "./.deploy/k8s/infra/rabbitmq/service.yaml"
+minikube service rabbitmq-exposer --url
 ```
 
 ## Deploy the queues and exchanges
 ```shell
-kubectl port-forward "service/judge-rabbitmq" 15672
 cd .deploy/terraform/rabbitmq
 terraform init
 export TF_VAR_rabbitmq_host=127.0.0.1
+export TF_VAR_rabbitmq_port=49157
 export TF_VAR_rabbitmq_username=$(kubectl get secret judge-rabbitmq-default-user -o jsonpath="{.data.username}" | base64 --decode)
 export TF_VAR_rabbitmq_password=$(kubectl get secret judge-rabbitmq-default-user -o jsonpath="{.data.password}" | base64 --decode)
 terraform plan
@@ -31,11 +33,6 @@ terraform apply
 ## Allow image pulling from the github registry
 ```shell
 kubectl create secret docker-registry regcred --docker-server=ghcr.io/yordaniliev2002 --docker-username=YordanIliev2002 --docker-password=${DOCKER_TOKEN} --docker-email=jordan.iliev501@gmail.com
-```
-
-## Deploy the workers
-```shell
-kubectl apply -f "./.deploy/k8s/apps/worker/deployment.yaml"
 ```
 
 ## Setup postgres secrets
@@ -52,9 +49,14 @@ kubectl apply -f "./.deploy/k8s/infra/postgres/deployment.yaml"
 kubectl apply -f "./.deploy/k8s/infra/postgres/service.yaml"
 ```
 
-# Setup server
+## Deploy the workers
+```shell
+kubectl apply -f "./.deploy/k8s/apps/worker/deployment.yaml"
+```
+
+# Deploy the server
 ```shell
 kubectl apply -f "./.deploy/k8s/apps/server/deployment.yaml"
 kubectl apply -f "./.deploy/k8s/apps/server/service.yaml"
-kubectl port-forward "service/judge-server" 4000
+minikube service judge-server-service --url
 ```
