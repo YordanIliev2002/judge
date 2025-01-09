@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker-deployment
+  labels:
+    app: worker
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: worker
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+      - name: worker-container
+        # TODO - change the version
+        image: ghcr.io/yordaniliev2002/judge-worker:35
+        env:
+        - name: AMQP_HOST
+          value: judge-rabbitmq.default.svc
+        - name: AMQP_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: judge-rabbitmq-default-user
+              key: username
+        - name: AMQP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: judge-rabbitmq-default-user
+              key: password

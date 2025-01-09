@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: judge-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: judge-postgres
+  template:
+    metadata:
+      labels:
+        app: judge-postgres
+    spec:
+      containers:
+        - name: judge-postgres
+          image: postgres:16.3
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - secretRef:
+                name: postgres-secrets
+          volumeMounts:
+            - name: postgres-database-storage
+              mountPath: /var/lib/pgsql/data
+      volumes:
+        - name: postgres-database-storage
+          persistentVolumeClaim:
+            claimName: judge-postgres-pv-claim
